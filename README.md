@@ -184,17 +184,12 @@ The system confirms full verification and generates a complete trust report.
 ## Case 2: Partially Verified Credential (Unknown Status)
 
 ## Input Verification
-The user submits an internship claim with limited supporting proof. The system detects partial existence but cannot confirm ownership.
+The user submits an internship claim.The system detects partial existence on web search but cannot confirm ownership.
 
 <img width="970" height="807" alt="Screenshot 2026-04-28 172431" src="https://github.com/user-attachments/assets/716c03e1-59cd-4171-b460-984070573dd2" />
 
-## Limited Evidence
-A certificate is uploaded but lacks strong validation.
-
-<img width="680" height="292" alt="Screenshot 2026-04-28 172039" src="https://github.com/user-attachments/assets/ec3660b2-6c63-4c9e-b987-514718727116" />
-
 ## Classification Result
-The system classifies the claim as unknown due to insufficient evidence.
+The system classifies the claim as unknown due to partial evidence without sufficient verification of ownership.
 
 <img width="941" height="715" alt="Screenshot 2026-04-28 172350" src="https://github.com/user-attachments/assets/11c93d7a-aebd-4349-8fc5-2f072aa49631" />
 <img width="851" height="783" alt="Screenshot 2026-04-28 172406" src="https://github.com/user-attachments/assets/dc36f6f4-1564-432a-8fdd-322b6d7c0f7e" />
@@ -204,7 +199,7 @@ The system classifies the claim as unknown due to insufficient evidence.
 ## Case 3: Suspicious Credential (No Evidence Found)
 
 ## Input Verification
-The user submits a certification claim without any supporting proof. The system finds no evidence and classifies it as suspicious.
+The user submits a certification claim without any supporting proof. The system finds no evidence on web and classifies it as suspicious.
 
 <img width="1069" height="812" alt="Screenshot 2026-04-28 172656" src="https://github.com/user-attachments/assets/27083426-476f-4210-9f1c-842977e7c1cd" />
 
@@ -213,9 +208,6 @@ No supporting validation is found.
 
 <img width="844" height="677" alt="Screenshot 2026-04-28 172624" src="https://github.com/user-attachments/assets/6cf1db83-a0ed-4e60-84c5-a937249874dd" />
 <img width="777" height="789" alt="Screenshot 2026-04-28 172637" src="https://github.com/user-attachments/assets/b2437436-30a0-4217-9923-c413e39e18d7" />
-
-## Final Outcome
-This represents a high-risk fabricated credential.
 
 ## Real-World Applications
 
