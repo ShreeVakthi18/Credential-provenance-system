@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Resume — ResumeVerify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:    #0a0a0f;
+      --paper:  #f5f3ee;
+      --accent: #2448ff;
+      --muted:  #7a7a8a;
+      --border: rgba(10,10,15,0.1);
+      --card:   #ffffff;
+      --green:  #16a34a;
+      --green-s:#f0fdf4;
+      --red:    #dc2626;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(245,243,238,0.9);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .brand span { color: var(--accent); }
+
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    .page {
+      max-width: 700px;
+      margin: 52px auto;
+      padding: 0 24px 80px;
+    }
+
+    .page-header { margin-bottom: 36px; }
+
+    .page-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .form-section {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    label .opt {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      color: var(--ink);
+      background: var(--paper);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(36,72,255,0.08);
+      background: #fff;
+    }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 1.5px dashed rgba(10,10,15,0.2);
+      border-radius: 4px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--paper);
+    }
+
+    .drop-zone:hover {
+      border-color: var(--accent);
+      background: rgba(36,72,255,0.02);
+    }
+
+    .drop-zone.has-files {
+      border-color: var(--green);
+      background: var(--green-s);
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(36,72,255,0.04);
+      transform: scale(1.01);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon { font-size: 1.6rem; margin-bottom: 8px; }
+
+    .drop-zone p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .drop-zone strong { color: var(--accent); font-weight: 500; }
+
+    .drop-meta {
+      font-size: 0.72rem;
+      color: rgba(10,10,15,0.3);
+      margin-top: 4px;
+    }
+
+    /* ── File list ── */
+    .file-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 8px 12px;
+      animation: slideIn 0.18s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fi-name {
+      flex: 1;
+      font-size: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fi-size {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .fi-badge {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .fi-badge.pdf  { background: #fef2f2; color: var(--red); }
+    .fi-badge.jpg,
+    .fi-badge.jpeg,
+    .fi-badge.png  { background: #faf5ff; color: #7c3aed; }
+
+    /* ── Links ── */
+    .link-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .link-row input { flex: 1; }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      padding: 8px 14px;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+
+    .add-link-btn {
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ── Submit ── */
+    .submit-bar {
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--paper);
+      border-top: 1px solid var(--border);
+      gap: 16px;
+    }
+
+    .submit-note {
+      font-size: 0.76rem;
+      color: var(--muted);
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    .btn-submit {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 13px 28px;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      letter-spacing: -0.01em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .btn-submit:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(36,72,255,0.3);
+    }
+
+    /* Progress overlay */
+    #progress-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,15,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      color: #fff;
+    }
+
+    #progress-overlay.active { display: flex; }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .progress-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .progress-sub {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .two-col { grid-template-columns: 1fr; }
+      nav { padding: 16px 20px; }
+      .form-section { padding: 20px; }
+      .submit-bar { flex-direction: column; align-items: stretch; }
+      .btn-submit { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="brand">Resume<span>Verify</span></a>
+    <a href="/" class="nav-back">← Back to home</a>
+  </nav>
+
+  <div id="progress-overlay">
+    <div class="spinner"></div>
+    <div class="progress-text">Verifying your resume…</div>
+    <div class="progress-sub">Checking claims against proof files and online sources.<br>This may take up to 60 seconds.</div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Upload your resume</h1>
+      <p>We'll extract every claim and verify it across three layers — PDF proof, external links, and live web search. Takes under 2 minutes.</p>
+    </div>
+
+    <div class="form-card">
+      <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="upload-form">
+
+        <!-- Basic Info -->
+        <div class="form-section">
+          <div class="section-label">Basic Info</div>
+          <div class="two-col">
+            <div class="field">
+              <label for="name">Full Name</label>
+              <input type="text" name="name" id="name" placeholder="Shree Vakthi S" required autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="email">Email Address</label>
+              <input type="email" name="email" id="email" placeholder="you@example.com" required autocomplete="email">
+            </div>
+          </div>
+        </div>
+
+        <!-- Resume -->
+        <div class="form-section">
+          <div class="section-label">Resume</div>
+          <div class="field">
+            <label>Resume PDF <span class="opt">(required)</span></label>
+            <div class="drop-zone" id="resume-zone">
+              <input type="file" name="resume" id="resume-input" accept=".pdf" required>
+              <div class="drop-icon">📄</div>
+              <p><strong>Click to upload</strong> or drag your resume here</p>
+              <div class="drop-meta">PDF only · max 5 MB</div>
+            </div>
+            <div class="file-list" id="resume-list"></div>
+          </div>
+        </div>
+
+        <!-- Proof files -->
+        <div class="form-section">
+          <div class="section-label">Supporting Proof <span style="color:var(--muted);font-size:0.85em;text-transform:none;letter-spacing:0;">(optional but recommended)</span></div>
+          <div class="field">
+            <label>Certificates, Offer Letters, Diplomas <span class="opt">(multiple allowed)</span></label>
+            <div class="drop-zone" id="proofs-zone">
+              <input type="file" name="proofs" id="proofs-input" accept=".pdf,.jpg,.jpeg,.png" multiple>
+              <div class="drop-icon">📎</div>
+              <p><strong>Click to upload</strong> or drag files here</p>
+              <div class="drop-meta">PDF, JPG, PNG · multiple files allowed</div>
+            </div>
+            <div class="file-list" id="proofs-list"></div>
+          </div>
+        </div>
+
+        <!-- Certificate Links -->
+        <div class="form-section">
+          <div class="section-label">Certificate Links <span style="color:var(--muted);font-size:0.85em;text-transform:none;letter-spacing:0;">(optional)</span></div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.5;">
+            Paste official verification URLs from Coursera, Udemy, LinkedIn Learning, GitHub, etc.
+          </p>
+
+          <div id="link-fields">
+            <div class="link-row">
+              <input type="text" name="certificate_links" placeholder="https://coursera.org/verify/...">
+            </div>
+          </div>
+          <button type="button" class="add-link-btn" onclick="addLink()">+ Add another link</button>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-bar">
+          <p class="submit-note">Your data is processed securely and not retained after verification completes.</p>
+          <button type="submit" class="btn-submit">Run Verification →</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function fmtBytes(b) {
+      if (b < 1024) return b + ' B';
+      if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+      return (b / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function ext(name) { return name.split('.').pop().toLowerCase(); }
+
+    function icon(e) {
+      if (e === 'pdf') return '📄';
+      if (['jpg','jpeg','png'].includes(e)) return '🖼️';
+      return '📎';
+    }
+
+    function renderFiles(files, listEl, zoneEl) {
+      listEl.innerHTML = '';
+      if (!files.length) { zoneEl.classList.remove('has-files'); return; }
+      zoneEl.classList.add('has-files');
+      Array.from(files).forEach(f => {
+        const e = ext(f.name);
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+          <span>${icon(e)}</span>
+          <span class="fi-name" title="${f.name}">${f.name}</span>
+          <span class="fi-size">${fmtBytes(f.size)}</span>
+          <span class="fi-badge ${e}">${e.toUpperCase()}</span>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    // Drag-over highlight
+    ['resume-zone','proofs-zone'].forEach(id => {
+      const zone = document.getElementById(id);
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', () => zone.classList.remove('drag-over'));
+    });
+
+    document.getElementById('resume-input').addEventListener('change', function() {
+      renderFiles(this.files, document.getElementById('resume-list'), document.getElementById('resume-zone'));
+    });
+
+    document.getElementById('proofs-input').addEventListener('change', function() {
+      renderFiles(this.files, document.getElementById('proofs-list'), document.getElementById('proofs-zone'));
+    });
+
+    function addLink() {
+      const container = document.getElementById('link-fields');
+      const row = document.createElement('div');
+      row.className = 'link-row';
+      row.innerHTML = `
+        <input type="text" name="certificate_links" placeholder="https://...">
+        <button type="button" class="btn-ghost" onclick="this.parentElement.remove()">Remove</button>
+      `;
+      container.appendChild(row);
+      row.querySelector('input').focus();
+    }
+
+    // Show progress overlay on submit
+    document.getElementById('upload-form').addEventListener('submit', function() {
+      document.getElementById('progress-overlay').classList.add('active');
+    });
+  </script>
+
+</body>
+</html>

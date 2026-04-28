@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verifying — ResumeVerify</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #1d4ed8;
+      --blue-soft: #eff6ff;
+      --text: #111827;
+      --sub: #6b7280;
+      --line: #e5e7eb;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #f9fafb;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .brand {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.1rem;
+      color: var(--blue);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 48px 52px;
+      text-align: center;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .spinner-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--blue-soft);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .sub-text {
+      font-size: 0.875rem;
+      color: var(--sub);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .steps {
+      text-align: left;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.83rem;
+      color: var(--sub);
+    }
+
+    .step.active { color: var(--text); }
+    .step.done { color: #16a34a; }
+
+    .step-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--line);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+    }
+
+    .step.active .step-indicator {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .step.done .step-indicator {
+      border-color: #16a34a;
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .step.done .step-indicator::after { content: '✓'; font-weight: 700; }
+    .step.active .step-indicator::after { content: ''; width: 6px; height: 6px; background: var(--blue); border-radius: 50%; display: block; animation: pulse 1s ease-in-out infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="brand">ResumeVerify</div>
+  </nav>
+
+  <main>
+    <div class="card">
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+      </div>
+      <h2>Verifying your resume</h2>
+      <p class="sub-text">This usually takes under 2 minutes. Don't close this tab.</p>
+
+      <div class="steps">
+        <div class="step done">
+          <div class="step-indicator"></div>
+          Resume uploaded and parsed
+        </div>
+        <div class="step done">
+          <div class="step-indicator"></div>
+          Claims extracted from document
+        </div>
+        <div class="step active">
+          <div class="step-indicator"></div>
+          Cross-checking against official sources
+        </div>
+        <div class="step">
+          <div class="step-indicator"></div>
+          Generating trust report
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

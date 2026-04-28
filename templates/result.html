@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results — ResumeVerify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:    #0a0a0f;
+      --paper:  #f5f3ee;
+      --accent: #2448ff;
+      --muted:  #7a7a8a;
+      --border: rgba(10,10,15,0.1);
+      --card:   #ffffff;
+      --green:  #15803d;
+      --green-s:#f0fdf4;
+      --yellow: #854d0e;
+      --yellow-s:#fffbeb;
+      --red:    #b91c1c;
+      --red-s:  #fef2f2;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(245,243,238,0.9);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .brand span { color: var(--accent); }
+
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    .page {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── SUMMARY HEADER ── */
+    .summary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px 36px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .summary-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .summary-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .summary-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .download-btn:hover { background: var(--accent); transform: translateY(-1px); }
+
+    /* ── SCORE BLOCK ── */
+    .score-block {
+      text-align: center;
+      padding: 24px 32px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      min-width: 160px;
+    }
+
+    .score-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .score-num.high   { color: var(--green); }
+    .score-num.medium { color: #ca8a04; }
+    .score-num.low    { color: var(--red); }
+
+    .score-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .score-counts {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .sc-chip {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .sc-chip.v { background: #dcfce7; color: var(--green); }
+    .sc-chip.u { background: #fef9c3; color: var(--yellow); }
+    .sc-chip.s { background: #fee2e2; color: var(--red); }
+
+    /* ── CLAIM SECTIONS ── */
+    .claim-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .claim-section-head {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .claim-section-head.verified { background: var(--green-s); }
+    .claim-section-head.unknown  { background: var(--yellow-s); }
+    .claim-section-head.suspect  { background: var(--red-s); }
+
+    .head-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .head-count {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .claim-item {
+      padding: 14px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .claim-item:last-child { border-bottom: none; }
+    .claim-item:hover { background: var(--paper); }
+
+    .ci-icon {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .ci-icon.v { background: #dcfce7; color: var(--green); }
+    .ci-icon.u { background: #fef9c3; color: var(--yellow); }
+    .ci-icon.s { background: #fee2e2; color: var(--red); }
+
+    .ci-body { flex: 1; min-width: 0; }
+
+    .ci-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.45;
+      margin-bottom: 3px;
+    }
+
+    .ci-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    /* Type badge */
+    .type-badge {
+      flex-shrink: 0;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    .type-badge.certification { background: #dbeafe; color: #1d4ed8; }
+    .type-badge.project       { background: #ede9fe; color: #7c3aed; }
+    .type-badge.internship    { background: #dcfce7; color: var(--green); }
+    .type-badge.education     { background: #fce7f3; color: #9d174d; }
+    .type-badge.unknown       { background: #f3f4f6; color: #6b7280; }
+
+    .empty-state {
+      padding: 18px 24px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Try Again ── */
+    .try-again {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .try-again a {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(122,122,138,0.3);
+      padding-bottom: 1px;
+      transition: color 0.15s;
+    }
+    .try-again a:hover { color: var(--ink); }
+
+    @media (max-width: 640px) {
+      .summary { grid-template-columns: 1fr; }
+      nav { padding: 16px 20px; }
+      .claim-item { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+
+<body>
+
+{# ─── MACROS ─── #}
+
+{# Strip [TYPE] prefix tags and section-header noise from a label #}
+{% macro clean_label(raw) -%}
+  {%- set t = raw
+      | replace('[CERTIFICATION]', '')
+      | replace('[PROJECT]',       '')
+      | replace('[INTERNSHIP]',    '')
+      | replace('[EDUCATION]',     '')
+      | replace('[UNKNOWN]',       '')
+      | replace('Certifications:', '')
+      | replace('Certification:',  '')
+      | replace('Projects:',       '')
+      | replace('Project:',        '')
+      | replace('Internships:',    '')
+      | replace('Internship:',     '')
+      | replace('Internship Experience', '')
+      | replace('Education:',      '')
+      | replace('- ',              '')
+  -%}
+  {{- t.strip() -}}
+{%- endmacro %}
+
+{# Determine CSS class from [TYPE] tag #}
+{% macro badge_class(raw) -%}
+  {%- if '[CERTIFICATION]' in raw -%}certification
+  {%- elif '[PROJECT]' in raw -%}project
+  {%- elif '[INTERNSHIP]' in raw -%}internship
+  {%- elif '[EDUCATION]' in raw -%}education
+  {%- else -%}unknown{%- endif -%}
+{%- endmacro %}
+
+{# Human readable badge label #}
+{% macro badge_label(raw) -%}
+  {%- if '[CERTIFICATION]' in raw -%}Certification
+  {%- elif '[PROJECT]' in raw -%}Project
+  {%- elif '[INTERNSHIP]' in raw -%}Internship
+  {%- elif '[EDUCATION]' in raw -%}Education
+  {%- else -%}Other{%- endif -%}
+{%- endmacro %}
+
+{# Score CSS class based on value #}
+{% macro score_class(score) -%}
+  {%- if score >= 70 -%}high{%- elif score >= 40 -%}medium{%- else -%}low{%- endif -%}
+{%- endmacro %}
+
+<nav>
+  <a href="/" class="brand">Resume<span>Verify</span></a>
+  <a href="/upload" class="nav-back">← Verify another</a>
+</nav>
+
+<div class="page">
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div>
+      <div class="summary-name">{{ name }}</div>
+      <div class="summary-meta">
+        <span>📧 {{ email }}</span>
+        <span>📋 {{ verified|length + unknown|length + suspicious|length }} claims extracted</span>
+      </div>
+      <a class="download-btn" href="{{ url_for('download', filename=report_filename) }}">
+        ⬇ Download PDF Report
+      </a>
+    </div>
+
+    <div class="score-block">
+      <div class="score-num {{ score_class(trust_score) }}">{{ trust_score }}%</div>
+      <div class="score-label">Trust Score</div>
+      <div class="score-counts">
+        <span class="sc-chip v">{{ verified|length }} verified</span>
+        <span class="sc-chip u">{{ unknown|length }} unknown</span>
+        <span class="sc-chip s">{{ suspicious|length }} suspicious</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERIFIED -->
+  <div class="claim-section">
+    <div class="claim-section-head verified">
+      <div class="head-title">
+        ✅ Verified Claims
+        <span class="head-count">{{ verified|length }} found</span>
+      </div>
+    </div>
+
+    {% if verified %}
+      {% for claim in verified %}
+        {%- set txt = clean_label(claim) -%}
+        {%- if txt|trim|length > 0 %}
+        <div class="claim-item">
+          <div class="ci-icon v">✓</div>
+          <div class="ci-body">
+            <div class="ci-text">{{ txt }}</div>
+            <div class="ci-sub">Source verified — matched in proof document or official link</div>
+          </div>
+          <span class="type-badge {{ badge_class(claim) }}">{{ badge_label(claim) }}</span>
+        </div>
+        {%- endif %}
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">No verified claims found.</div>
+    {% endif %}
+  </div>
+
+  <!-- UNKNOWN -->
+  <div class="claim-section">
+    <div class="claim-section-head unknown">
+      <div class="head-title">
+        ⚠️ Could Not Verify
+        <span class="head-count">{{ unknown|length }} found</span>
+      </div>
+    </div>
+
+    {% if unknown %}
+      {% for claim in unknown %}
+        {%- set txt = clean_label(claim) -%}
+        {%- if txt|trim|length > 0 %}
+        <div class="claim-item">
+          <div class="ci-icon u">?</div>
+          <div class="ci-body">
+            <div class="ci-text">{{ txt }}</div>
+            <div class="ci-sub">Entity exists online but no personal proof provided</div>
+          </div>
+          <span class="type-badge {{ badge_class(claim) }}">{{ badge_label(claim) }}</span>
+        </div>
+        {%- endif %}
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">No unverifiable claims. All entries had sufficient evidence.</div>
+    {% endif %}
+  </div>
+
+  <!-- SUSPICIOUS -->
+  <div class="claim-section">
+    <div class="claim-section-head suspect">
+      <div class="head-title">
+        🚩 Suspicious Claims
+        <span class="head-count">{{ suspicious|length }} found</span>
+      </div>
+    </div>
+
+    {% if suspicious %}
+      {% for claim in suspicious %}
+        {%- set txt = clean_label(claim) -%}
+        {%- if txt|trim|length > 0 %}
+        <div class="claim-item">
+          <div class="ci-icon s">✕</div>
+          <div class="ci-body">
+            <div class="ci-text">{{ txt }}</div>
+            <div class="ci-sub">No evidence found locally or online — flagged for review</div>
+          </div>
+          <span class="type-badge {{ badge_class(claim) }}">{{ badge_label(claim) }}</span>
+        </div>
+        {%- endif %}
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">No suspicious claims detected. All checked claims appear consistent.</div>
+    {% endif %}
+  </div>
+
+  <div class="try-again">
+    <a href="/upload">← Verify another resume</a>
+  </div>
+
+</div>
+
+</body>
+</html>
